@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: langmate-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password1234!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - langmate-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langmate-app
+    depends_on:
+      - sqlserver
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - langmate-network
+
+networks:
+  langmate-network:
+    driver: bridge
+
+volumes:
+  sqlserver_data: 

@@ -31,8 +31,9 @@ public class UserService {
 
     private final JwtUtils jwtUtils;
 
+    private final RegisterDtoToUser registerMapper = Mappers.getMapper(RegisterDtoToUser.class);
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private RegisterDtoToUser registerMapper = Mappers.getMapper(RegisterDtoToUser.class);
 
     public String processLogin(LoginDto loginUser) {
         Optional<User> foundUser = userRepository.findByUsername(loginUser.username());
@@ -75,5 +76,9 @@ public class UserService {
                 return loadJwtUser(username);
             }
         };
+    }
+
+    public void deleteByUsername(String username) {
+        userRepository.deleteByUsername(username);
     }
 }
