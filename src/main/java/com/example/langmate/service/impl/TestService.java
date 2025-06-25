@@ -88,9 +88,23 @@ public class TestService {
 
     private Integer mapQuestionAndAnswerToPoint(PostAnswerRequest request) {
     val question = questionRepository.findByQuestion(request.question());
-    if (question.getAnswer().equals(request.answer())) {
+    if (question.getAnswer().toLowerCase().equals(request.answer().toLowerCase())) {
       return 1;
     }
     return 0;
+  }
+
+  public java.util.List<String> getQuestionsForLanguage(String languageName) throws LangmateRuntimeException {
+    val language = languageRepository.findByName(languageName)
+        .orElseThrow(() -> new LangmateRuntimeException(404, "Language not found"));
+    val questions = questionRepository.findAllByLanguage(language);
+    Collections.shuffle(questions);
+    return questions.stream().limit(5).map(q -> q.getQuestion()).toList();
+  }
+
+  public String getJwtForUser(String username) throws LangmateRuntimeException {
+    val user = userService.getUserByUsername(username)
+        .orElseThrow(() -> new LangmateRuntimeException(403, "User not found"));
+    return userService.generateJwtForUser(user);
   }
 }

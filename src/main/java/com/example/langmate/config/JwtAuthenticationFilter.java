@@ -29,12 +29,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
+    // Check Authorization header first
     val authHeader = request.getHeader("Authorization");
-    if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
+    String jwtToken = null;
+    
+    if (StringUtils.isNotEmpty(authHeader) && StringUtils.startsWith(authHeader, "Bearer ")) {
+      jwtToken = authHeader.substring(7);
+    } else {
+      // If no Authorization header, check for JWT cookie
+      val cookies = request.getCookies();
+      if (cookies != null) {
+        for (val cookie : cookies) {
+          if ("JWT".equals(cookie.getName())) {
+            jwtToken = cookie.getValue();
+            break;
+          }
+        }
+      }
+    }
+    
+    if (StringUtils.isEmpty(jwtToken)) {
       filterChain.doFilter(request, response);
       return;
     }
-    val jwtToken = authHeader.substring(7);
+    
     val username = jwtService.getUserNameFromJwtToken(jwtToken);
     if (StringUtils.isNotEmpty(username)
         && SecurityContextHolder.getContext().getAuthentication() == null) {

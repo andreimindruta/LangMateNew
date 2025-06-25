@@ -42,7 +42,12 @@ public class SecurityConfiguration {
                         "/langmate/users/register",
                         "/langmate/language/all",
                         "/langmate/language/enroll/*",
-                        "/register-login")
+                        "/register-login",
+                        "/langmate/tests",
+                        "/langmate/tests/*",
+                        "/langmate/tests/**",
+                        "/langmate/tests/*/submit"
+                    )
                     .permitAll()
                     .anyRequest()
                     .authenticated())

@@ -52,9 +52,8 @@ public class LanguagesController {
       RedirectAttributes redirectAttributes) {
     try {
       Cookie jwtCookie = WebUtils.getCookie(request, "JWT");
-      GetLanguagesResponse response =
-          languageService.addLanguageToUser(languageName, jwtCookie.getValue());
-      model.addAttribute("language", response);
+      languageService.addLanguageToUser(languageName, jwtCookie.getValue());
+      model.addAttribute("language", languageName);
       return "enroll"; // view page redirect
     } catch (LangmateRuntimeException ex) {
       redirectAttributes.addFlashAttribute("error", "A apărut o eroare: " + ex.getMessage());

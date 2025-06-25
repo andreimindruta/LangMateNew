@@ -3,13 +3,26 @@
 <head>
     <title>Enroll</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .action-buttons {
+            margin-top: 20px;
+        }
+        .action-buttons a {
+            margin-right: 15px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
 <header th:replace="navbar :: navbar"></header>
 <div class="container">
     <h2>Enroll in a Language</h2>
-    <button class="btn btn-primary" th:href="@{'/langmate/lesson/' + ${language}}">Lesson</button>
-    <button class="btn btn-primary" th:href="@{'/test'}">Test</button>
+    <p>You are now enrolled in: <strong th:text="${language}"></strong></p>
+    
+    <div class="action-buttons">
+        <a th:href="@{'/langmate/lesson/' + ${language}}" class="btn btn-primary">Lesson</a>
+        <a th:href="@{'/langmate/tests/' + ${language}}" class="btn btn-success">Test</a>
+    </div>
 </div>
 </body>
 </html>

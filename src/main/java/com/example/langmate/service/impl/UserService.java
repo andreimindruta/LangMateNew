@@ -34,6 +34,13 @@ public class UserService {
 
   public String processLogin(LoginDto loginUser) {
     Optional<User> foundUser = userRepository.findByUsername(loginUser.username());
+    
+    // Check if user exists
+    if (foundUser.isEmpty()) {
+      log.debug("User not found: {}", loginUser.username());
+      return null;
+    }
+    
     User userData = foundUser.get();
     if (!passwordEncoder.matches(loginUser.password(), userData.getPass())) {
       log.debug("The password doesn't match for user {}", loginUser.username());
@@ -51,6 +58,14 @@ public class UserService {
   public Optional<User> getCurrentUser(String jwt) {
     String username = jwtUtils.getUserNameFromJwtToken(jwt);
     return userRepository.findByUsername(username);
+  }
+
+  public Optional<User> getUserByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
+
+  public String generateJwtForUser(User user) {
+    return jwtUtils.generateJwtToken(user);
   }
 
   public UserDetails loadJwtUser(String username) {
