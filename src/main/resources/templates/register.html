@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Register</title>
+</head>
+<body>
+<h2>Register</h2>
+<form th:action="@{/langmate/users/register}" th:object="${registerDto}" method="POST">
+  <div>
+    <label>Username:</label>
+    <input type="text" th:field="*{username}" />
+    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</span>
+  </div>
+  <div>
+    <label>Password:</label>
+    <input type="password" th:field="*{pass}" />
+  </div>
+  <div>
+    <label>Name:</label>
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+  </div>
+  <div>
+    <button type="submit">Register</button>
+  </div>
+</form>
+</body>
+</html>

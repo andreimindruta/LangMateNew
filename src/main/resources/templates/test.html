@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lesson Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:replace="fragments/navbar :: navbar"></header>
+<div class="container mt-4">
+    <h2>Lesson Test</h2>
+
+    <form th:action="@{'/langmate/test/submit'}" method="post">
+        <input type="hidden" name="lessonId" th:value="${lessonId}" />
+
+        <div class="mb-3" th:each="question, iterStat : ${questions}">
+            <p><strong th:text="'Q' + ${iterStat.index + 1} + '. ' + ${question.text}">Question text</strong></p>
+            <input class="form-control mb-2" type="text" th:name="'answers[' + ${iterStat.index} + ']'" placeholder="Type your answer">
+        </div>
+
+        <button type="submit" class="btn btn-success">Submit Test</button>
+    </form>
+</div>
+</body>
+</html>

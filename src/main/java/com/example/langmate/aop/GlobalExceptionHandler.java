@@ -15,26 +15,23 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-
-  @ExceptionHandler({
-      LangmateRuntimeException.class
-  })
-  public ResponseEntity<LangmateErrorResponse> hanldeExceptions(LangmateRuntimeException e){
-      return ResponseEntity.status(e.getStatus()).body(new LangmateErrorResponse(e.getMessage()));
+  @ExceptionHandler({LangmateRuntimeException.class})
+  public ResponseEntity<LangmateErrorResponse> hanldeExceptions(LangmateRuntimeException e) {
+    return ResponseEntity.status(e.getStatus()).body(new LangmateErrorResponse(e.getMessage()));
   }
 
-  @ExceptionHandler({
-      NullPointerException.class
-  })
-  public ResponseEntity<LangmateErrorResponse> hanldeNullExceptions(NullPointerException e){
+  @ExceptionHandler({NullPointerException.class})
+  public ResponseEntity<LangmateErrorResponse> hanldeNullExceptions(NullPointerException e) {
     return ResponseEntity.status(500).body(new LangmateErrorResponse(e.getMessage()));
   }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+  public ResponseEntity<Map<String, String>> handleValidationErrors(
+      MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();
-    ex.getBindingResult().getFieldErrors().forEach(err ->
-            errors.put(err.getField(), err.getDefaultMessage())
-    );
+    ex.getBindingResult()
+        .getFieldErrors()
+        .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
     return ResponseEntity.badRequest().body(errors);
   }
 }

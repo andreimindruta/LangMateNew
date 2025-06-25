@@ -7,15 +7,15 @@ import lombok.Data;
 @Data
 public class MilestoneUser {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "milestone_id")
-    private Milestone milestone;
+  @ManyToOne
+  @JoinColumn(name = "milestone_id")
+  private Milestone milestone;
 }

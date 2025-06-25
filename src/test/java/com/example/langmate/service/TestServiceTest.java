@@ -51,6 +51,8 @@ public class TestServiceTest {
     @InjectMocks
     private TestService testService;
 
+    private final String jwt = "test-jwt-token";
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -75,7 +77,7 @@ public class TestServiceTest {
         when(languageRepository.findByName("Spanish")).thenReturn(Optional.empty());
 
         assertThrows(LangmateRuntimeException.class, () -> {
-            testService.saveResultForTest(request);
+            testService.saveResultForTest(request, jwt);
         });
     }
 
@@ -100,12 +102,12 @@ public class TestServiceTest {
 
         // stubbing repositories & services
         when(languageRepository.findByName("Spanish")).thenReturn(Optional.of(language));
-        when(userService.getCurrentUser()).thenReturn(Optional.of(user));
+        when(userService.getCurrentUser(jwt)).thenReturn(Optional.of(user));
         when(questionRepository.findByQuestion(any())).thenReturn(question);
         when(resultRepository.save(any(Result.class))).thenReturn(result);
 
         // invoke
-        GetResultResponse resp = testService.saveResultForTest(request);
+        GetResultResponse resp = testService.saveResultForTest(request, jwt);
 
         // verify
         assertNotNull(resp);

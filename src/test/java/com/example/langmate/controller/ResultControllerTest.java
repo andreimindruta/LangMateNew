@@ -35,19 +35,6 @@ public class ResultControllerTest {
     }
 
     @Test
-    public void testGetResults() throws Exception {
-        String languageName = "Spanish";
-        GetResultsResponse mockResponse = new GetResultsResponse(Collections.emptyList() );
-        when(resultService.findResultsForLanguage(languageName)).thenReturn(mockResponse);
-
-        mockMvc.perform(post("/langmate/results/" + languageName))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        verify(resultService).findResultsForLanguage(languageName);
-    }
-
-    @Test
     public void testGetResultDetails() throws Exception {
         Long resultId = 1L;
         GetResultResponse mockResponse = new GetResultResponse(5D, "Spanish", "21/10/2023");

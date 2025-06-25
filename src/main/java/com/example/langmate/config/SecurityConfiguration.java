@@ -24,14 +24,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final UserService userService;
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(request -> request.requestMatchers("/","/login", "/documentation","/andrei-api-docs","/andrei-api-docs/*","/swagger-ui/*","/langmate/users/login", "/langmate/users/register")
-            .permitAll().anyRequest().authenticated())
+        .authorizeHttpRequests(
+            request ->
+                request
+                    .requestMatchers(
+                        "/",
+                        "/login",
+                        "/documentation",
+                        "/andrei-api-docs",
+                        "/andrei-api-docs/*",
+                        "/swagger-ui/*",
+                        "/langmate/users/login",
+                        "/langmate/users/register",
+                        "/langmate/language/all",
+                        "/langmate/language/enroll/*",
+                        "/register-login")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-        .authenticationProvider(authenticationProvider()).addFilterBefore(
-            jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        .authenticationProvider(authenticationProvider())
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 

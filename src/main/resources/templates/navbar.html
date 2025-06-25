@@ -1,0 +1,17 @@
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light" xmlns:th="http://www.w3.org/1999/xhtml">
+    <a class="navbar-brand" href="#">LangMate</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item" th:classappend="${pageName == 'allLanguages'}? active">
+                <a class="nav-link" th:href="@{/duolingo/language/all}" th:text="Languages"></a>
+            </li>
+            <li class="nav-item" th:classappend="${pageName == 'register-login'}? active">
+                <a class="nav-link" th:href="@{/register-login}" th:text="Logout"></a>
+            </li>
+
+        </ul>
+    </div>
+</nav>

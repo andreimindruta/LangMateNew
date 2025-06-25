@@ -29,18 +29,19 @@ public class ResultController {
 
   private final ResultService resultService;
 
+/*
   @PostMapping(path = "/{languageName}")
-  public ResponseEntity<GetResultsResponse> getResults(
-      @PathVariable final String languageName) throws LangmateRuntimeException {
+  public ResponseEntity<GetResultsResponse> getResults(@PathVariable final String languageName)
+      throws LangmateRuntimeException {
 
     return ResponseEntity.ok(resultService.findResultsForLanguage(languageName));
   }
+*/
+
   @PostMapping(path = "/get-result-details/{resultId}")
-  public ResponseEntity<GetResultResponse> getResultDetails(
-      @PathVariable final Long resultId) throws LangmateRuntimeException {
+  public ResponseEntity<GetResultResponse> getResultDetails(@PathVariable final Long resultId)
+      throws LangmateRuntimeException {
 
     return ResponseEntity.ok(resultService.getResultDetails(resultId));
   }
-
-
 }

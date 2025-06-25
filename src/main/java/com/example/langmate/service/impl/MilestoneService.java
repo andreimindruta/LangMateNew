@@ -7,6 +7,7 @@ import com.example.langmate.domain.entities.MilestoneUser;
 import com.example.langmate.domain.entities.User;
 import com.example.langmate.repository.MilestoneRepository;
 import com.example.langmate.repository.MilestoneUserRepository;
+import com.example.langmate.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class MilestoneService {
 
     @Autowired
     private MilestoneUserRepository milestoneUserRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     @Lazy
@@ -104,8 +108,11 @@ public class MilestoneService {
      */
     private void assignMilestoneToUser(Long userId, Milestone milestone) {
         if (!milestoneUserRepository.existsByUserIdAndMilestoneId(userId, milestone.getId())) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+            
             MilestoneUser milestoneUser = new MilestoneUser();
-            milestoneUser.setUser(new User(userId));
+            milestoneUser.setUser(user);
             milestoneUser.setMilestone(milestone);
             milestoneUserRepository.save(milestoneUser);
             logger.info("Milestone assigned successfully: {} to userId: {}", milestone.getName(), userId);

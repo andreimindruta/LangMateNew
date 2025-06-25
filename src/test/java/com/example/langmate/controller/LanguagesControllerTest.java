@@ -34,39 +34,35 @@ public class LanguagesControllerTest {
     }
 
     @Test
-    public void testGetUserLanguages() throws Exception {
-        GetLanguagesResponse mockResponse = new GetLanguagesResponse(Collections.emptyList());
-        when(languageService.getUserLanguages()).thenReturn(mockResponse);
-
-        mockMvc.perform(get("/langmate/language"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        verify(languageService).getUserLanguages();
-    }
-
-    @Test
     public void testGetLanguages() throws Exception {
         GetLanguagesResponse mockResponse = new GetLanguagesResponse(Collections.emptyList());
         when(languageService.getLanguages()).thenReturn(mockResponse);
 
         mockMvc.perform(get("/langmate/language/all"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(view().name("allLanguages"));
 
         verify(languageService).getLanguages();
+    }
+
+    @Test
+    public void testEnrollPage() throws Exception {
+        mockMvc.perform(get("/langmate/language/enroll/Spanish"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("enroll"));
     }
 
     @Test
     public void testAddLanguage() throws Exception {
         String languageName = "Spanish";
         GetLanguagesResponse mockResponse = new GetLanguagesResponse(Collections.emptyList());
-        when(languageService.addLanguageToUser(languageName)).thenReturn(mockResponse);
+        when(languageService.addLanguageToUser(languageName, "test-jwt-token")).thenReturn(mockResponse);
 
-        mockMvc.perform(post("/langmate/language/enroll/" + languageName))
+        mockMvc.perform(post("/langmate/language/enroll/" + languageName)
+                .cookie(new jakarta.servlet.http.Cookie("JWT", "test-jwt-token")))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(view().name("enroll"));
 
-        verify(languageService).addLanguageToUser(languageName);
+        verify(languageService).addLanguageToUser(languageName, "test-jwt-token");
     }
 }

@@ -1,5 +1,3 @@
 package com.example.langmate.controller.payload.request;
 
-public record GetQuestionRequest(String languageName) {
-
-}
+public record GetQuestionRequest(String languageName) {}

@@ -28,7 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.config.location=classpath:/application-test.properties")
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class LanguageServiceIntegrationTest {

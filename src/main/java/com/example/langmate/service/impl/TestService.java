@@ -14,7 +14,6 @@ import com.example.langmate.validation.LangmateRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -26,68 +25,72 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class TestService {
 
-    private final QuestionRepository questionRepository;
+  private final QuestionRepository questionRepository;
 
-    private final LanguageRepository languageRepository;
+  private final LanguageRepository languageRepository;
 
-    private final UserService userService;
+  private final UserService userService;
 
-    private final ResultRepository resultRepository;
+  private final ResultRepository resultRepository;
 
-    private final MilestoneService milestoneService;
+  private final MilestoneService milestoneService;
 
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+  SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
+  public GetQuestionsResponse findQuestionsForTest(final GetQuestionRequest request)
+      throws LangmateRuntimeException {
+    val language =
+        languageRepository
+            .findByName(request.languageName())
+            .orElseThrow(() -> new LangmateRuntimeException(404, "Language not found"));
+    val questions = questionRepository.findAllByLanguage(language);
 
-    public GetQuestionsResponse findQuestionsForTest(final GetQuestionRequest request)
+    Collections.shuffle(questions);
+    val reducedListOfQuestions = questions.subList(0, 5);
+    val mappedQuestions =
+        reducedListOfQuestions.stream()
+            .map(question -> new GetQuestionResponse(question.getQuestion()))
+            .toList();
+    return new GetQuestionsResponse(mappedQuestions);
+  }
+
+    public GetResultResponse saveResultForTest(final PostTestResultRequest request, String jwt)
             throws LangmateRuntimeException {
-        val language = languageRepository.findByName(request.languageName()).orElseThrow(
-                () -> new LangmateRuntimeException(404, "Language not found")
-        );
-        val questions = questionRepository.findAllByLanguage(language);
 
-        Collections.shuffle(questions);
-        val reducedListOfQuestions = questions.subList(0, 5);
-        val mappedQuestions = reducedListOfQuestions
-                .stream()
-                .map(question -> new GetQuestionResponse(question.getQuestion()))
-                .toList();
-        return new GetQuestionsResponse(mappedQuestions);
-    }
+        val points = request.answers().stream().map(this::mapQuestionAndAnswerToPoint).toList();
 
-    public GetResultResponse saveResultForTest(final PostTestResultRequest request)
-            throws LangmateRuntimeException {
+        val language = languageRepository
+                .findByName(request.languageName())
+                .orElseThrow(() -> new LangmateRuntimeException(400, "Language does not exist"));
 
-        val points = request.answers().stream()
-                .map(this::mapQuestionAndAnswerToPoint)
-                .toList();
-
-        val language = languageRepository.findByName(request.languageName()).orElseThrow(
-                () -> new LangmateRuntimeException(400, "Language does not exist"));
         val grade = points.stream().mapToDouble(Integer::doubleValue).sum();
-        val currentUser = userService.getCurrentUser().orElseThrow(
-                () -> new LangmateRuntimeException(403, "User not found")
-        );
+
+        val user = userService.getCurrentUser(jwt)
+                .orElseThrow(() -> new LangmateRuntimeException(403, "User not found"));
+
         val result = Result.builder()
-                .user(currentUser)
+                .user(user)
                 .timestamp(new Date())
                 .grade(grade)
-                .language(language).build();
+                .language(language)
+                .build();
+
         val savedResult = resultRepository.save(result);
 
-        milestoneService.checkAndAssignMilestones(currentUser.getId(), language.getId());
+        milestoneService.checkAndAssignMilestones(user.getId(), language.getId());
 
-        return new GetResultResponse(savedResult.getGrade(), savedResult.getLanguage().getName(), formatter.format(result.getTimestamp()));
+        return new GetResultResponse(
+                savedResult.getGrade(),
+                savedResult.getLanguage().getName(),
+                formatter.format(result.getTimestamp()));
     }
+
 
     private Integer mapQuestionAndAnswerToPoint(PostAnswerRequest request) {
-        val question = questionRepository.findByQuestion(request.question());
-        if (question.getAnswer().equals(request.answer())) {
-            return 1;
-        }
-        return 0;
+    val question = questionRepository.findByQuestion(request.question());
+    if (question.getAnswer().equals(request.answer())) {
+      return 1;
     }
-
-
-
+    return 0;
+  }
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enroll</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:replace="navbar :: navbar"></header>
+<div class="container">
+    <h2>Enroll in a Language</h2>
+    <button class="btn btn-primary" th:href="@{'/langmate/lesson/' + ${language}}">Lesson</button>
+    <button class="btn btn-primary" th:href="@{'/test'}">Test</button>
+</div>
+</body>
+</html>

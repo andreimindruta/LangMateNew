@@ -11,24 +11,24 @@ import lombok.Data;
 @Data
 @Builder(toBuilder = true)
 public class Language {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToMany(mappedBy = "language")
-    private List<Question> questions;
+  private String name;
 
-    @OneToMany(mappedBy = "language")
-    private List<Lesson> lessons;
+  @OneToMany(mappedBy = "language")
+  private List<Question> questions;
 
-    public Language() {
-    }
+  @OneToMany(mappedBy = "language")
+  private List<Lesson> lessons;
 
-    public Language(Long id, String name, List<Question> questions, List<Lesson> lessons) {
-        this.id = id;
-        this.name = name;
-        this.questions = questions;
-        this.lessons = lessons;
-    }
+  public Language() {}
+
+  public Language(Long id, String name, List<Question> questions, List<Lesson> lessons) {
+    this.id = id;
+    this.name = name;
+    this.questions = questions;
+    this.lessons = lessons;
+  }
 }

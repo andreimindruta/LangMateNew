@@ -12,18 +12,17 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Milestone {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @EqualsAndHashCode.Include
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
-    private Integer targetValue;
+  private Integer targetValue;
 
-    @Enumerated(EnumType.STRING)
-    private MilestoneTargetType targetType; // add milestone type
-
+  @Enumerated(EnumType.STRING)
+  private MilestoneTargetType targetType; // add milestone type
 }

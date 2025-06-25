@@ -35,13 +35,14 @@ public class LessonControllerTest {
     @Test
     public void testGetLessons() throws Exception {
         String languageName = "Spanish";
-        GetLessonsResponse mockResponse = new GetLessonsResponse(Collections.emptyList()); // Assuming you have a default constructor
-        when(lessonService.getLessons(languageName)).thenReturn(mockResponse);
+        GetLessonsResponse mockResponse = new GetLessonsResponse(Collections.emptyList());
+        when(lessonService.getLessons(languageName, "test-jwt-token")).thenReturn(mockResponse);
 
-        mockMvc.perform(get("/langmate/lesson/" + languageName))
+        mockMvc.perform(get("/langmate/lesson/" + languageName)
+                .cookie(new jakarta.servlet.http.Cookie("JWT", "test-jwt-token")))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(view().name("lesson"));
 
-        verify(lessonService).getLessons(languageName);
+        verify(lessonService).getLessons(languageName, "test-jwt-token");
     }
 }

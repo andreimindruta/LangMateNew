@@ -35,6 +35,8 @@ public class LessonServiceTest {
     @InjectMocks
     private LessonService lessonService;
 
+    private final String jwt = "test-jwt-token";
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -43,10 +45,10 @@ public class LessonServiceTest {
     @Test
     public void getLessons_UserNotFound_ThrowsException() {
         String languageName = "Spanish";
-        when(userService.getCurrentUser()).thenReturn(Optional.empty());
+        when(userService.getCurrentUser(jwt)).thenReturn(Optional.empty());
 
         assertThrows(LangmateRuntimeException.class, () -> {
-            lessonService.getLessons(languageName);
+            lessonService.getLessons(languageName, jwt);
         });
     }
 
@@ -54,10 +56,10 @@ public class LessonServiceTest {
     public void getLessons_UserNotEnrolledInAnyLanguages_ThrowsException() {
         String languageName = "Spanish";
         User mockUser = mock(User.class);
-        when(userService.getCurrentUser()).thenReturn(Optional.of(mockUser));
+        when(userService.getCurrentUser(jwt)).thenReturn(Optional.of(mockUser));
         when(mockUser.getLanguages()).thenReturn(List.of());
         assertThrows(LangmateRuntimeException.class, () -> {
-            lessonService.getLessons(languageName);
+            lessonService.getLessons(languageName, jwt);
         });
     }
 
@@ -68,12 +70,12 @@ public class LessonServiceTest {
         Language mockLanguage = Language.builder().name(languageName).id(1L).build();
         Lesson mockLesson = Lesson.builder().id(1L).title("Greetings").text("Hola means Hi").build();
 
-        when(userService.getCurrentUser()).thenReturn(Optional.of(mockUser));
+        when(userService.getCurrentUser(jwt)).thenReturn(Optional.of(mockUser));
         when(mockUser.getLanguages()).thenReturn(List.of(mockLanguage));
         when(languageRepository.findByName(languageName)).thenReturn(Optional.of(mockLanguage));
         when(lessonRepository.findAllByLanguage(mockLanguage)).thenReturn(List.of(mockLesson));
 
-        GetLessonsResponse response = lessonService.getLessons(languageName);
+        GetLessonsResponse response = lessonService.getLessons(languageName, jwt);
         assertNotNull(response);
         assertFalse(response.lessons().isEmpty());
         assertEquals("Greetings", response.lessons().get(0).title());

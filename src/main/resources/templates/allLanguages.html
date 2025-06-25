@@ -1,0 +1,29 @@
+<head>
+    <title>Languages Options</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:replace="navbar :: navbar"></header>
+<div class="container">
+    <h2>Languages Options</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Languages</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="str : ${languages}">
+            <td>
+                <!-- Form to submit a POST request to enroll in a selected language -->
+                <form th:action="@{'/langmate/language/enroll/' + ${str.name}}" method="post">
+                    <!-- Display the language name inside a button which submits the form -->
+                    <button type="submit" class="btn btn-link" th:text="${str.name}"></button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

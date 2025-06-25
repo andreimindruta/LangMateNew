@@ -8,23 +8,23 @@ import lombok.Data;
 @Data
 @Builder
 public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String question;
-    private String answer;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "language_id")
-    private Language language;
+  private String question;
+  private String answer;
 
-    public Question() {
-    }
+  @ManyToOne
+  @JoinColumn(name = "language_id")
+  private Language language;
 
-    public Question(Long id, String question, String answer, Language language) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-        this.language = language;
-    }
+  public Question() {}
+
+  public Question(Long id, String question, String answer, Language language) {
+    this.id = id;
+    this.question = question;
+    this.answer = answer;
+    this.language = language;
+  }
 }
