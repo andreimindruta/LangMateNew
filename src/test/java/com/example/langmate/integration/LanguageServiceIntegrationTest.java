@@ -28,6 +28,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 @SpringBootTest(properties = "spring.config.location=classpath:/application-test.properties")
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -68,10 +72,10 @@ public class LanguageServiceIntegrationTest {
         org.mockito.Mockito.when(jwtUtils.getUserNameFromJwtToken(fakeJwt)).thenReturn("andrei");
         org.mockito.Mockito.when(userRepository.findByUsername("andrei")).thenReturn(LangmateTestUtils.mockNewUser());
 
-        // Clear and seed test data
-        languageRepository.deleteAll();
-        lessonRepository.deleteAll();
+        // Clear and seed test data - delete in correct order to respect foreign keys
         questionRepository.deleteAll();
+        lessonRepository.deleteAll();
+        languageRepository.deleteAll();
 
         Language language = new Language();
         language.setName("franceza");
@@ -97,5 +101,15 @@ public class LanguageServiceIntegrationTest {
         List<?> langs = response.languages();
         Assertions.assertEquals(1, langs.size());
         Assertions.assertEquals("franceza", response.languages().get(0).name());
+    }
+
+    @Test
+    void shouldGetLanguagesPaginated() {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<com.example.langmate.controller.payload.response.GetLanguageResponse> response = languageService.getLanguagesPaginated(pageable);
+        
+        Assertions.assertEquals(1, response.getTotalElements());
+        Assertions.assertEquals(1, response.getContent().size());
+        Assertions.assertEquals("franceza", response.getContent().get(0).name());
     }
 }

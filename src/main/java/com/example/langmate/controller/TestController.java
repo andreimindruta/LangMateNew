@@ -54,8 +54,13 @@ public class TestController {
 
   @GetMapping("/{languageName}")
   public String showTestForLanguage(@PathVariable String languageName, Model model) throws com.example.langmate.validation.LangmateRuntimeException {
+    log.info("Received request for test with language: '{}'", languageName);
+    
     // Obține întrebările pentru limba respectivă
     List<String> questions = testService.getQuestionsForLanguage(languageName);
+    
+    log.info("Found {} questions for language: '{}'", questions.size(), languageName);
+    
     model.addAttribute("language", languageName);
     model.addAttribute("questions", questions);
     return "test";

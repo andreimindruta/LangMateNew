@@ -95,9 +95,16 @@ public class TestService {
   }
 
   public java.util.List<String> getQuestionsForLanguage(String languageName) throws LangmateRuntimeException {
+    log.info("Looking for questions for language: '{}'", languageName);
+    
     val language = languageRepository.findByName(languageName)
         .orElseThrow(() -> new LangmateRuntimeException(404, "Language not found"));
+    
+    log.info("Found language: '{}' with ID: {}", language.getName(), language.getId());
+    
     val questions = questionRepository.findAllByLanguage(language);
+    log.info("Found {} questions for language: '{}'", questions.size(), languageName);
+    
     Collections.shuffle(questions);
     return questions.stream().limit(5).map(q -> q.getQuestion()).toList();
   }
