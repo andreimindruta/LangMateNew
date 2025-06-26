@@ -77,7 +77,7 @@ public class LanguagesController {
     model.addAttribute("language", languageName);
     return "enroll";
   }
-  
+
   // Helper class for page information
   public static class PageInfo {
     private final int pageNumber;

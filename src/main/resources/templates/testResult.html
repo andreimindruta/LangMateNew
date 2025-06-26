@@ -67,6 +67,27 @@
                             <strong>Felicitări!</strong> Ai completat testul cu succes!
                         </div>
                         
+                        <!-- Secțiunea pentru milestone-uri -->
+                        <div class="mt-4" th:if="${!userMilestones.isEmpty()}">
+                            <h3 class="mb-3">🏆 Milestone-urile tale</h3>
+                            <div class="row">
+                                <div class="col-md-6 mb-2" th:each="milestone : ${userMilestones}">
+                                    <div class="card border-success">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title text-success mb-1" th:text="${milestone.name}">Milestone Name</h6>
+                                            <p class="card-text small text-muted mb-0" th:text="${milestone.description}">Description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3" th:if="${userMilestones.isEmpty()}">
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Încă nu ai milestone-uri!</strong> Continuă să înveți și să dai teste pentru a obține milestone-uri.
+                            </div>
+                        </div>
+                        
                         <div class="d-grid gap-3 mt-4">
                             <a href="/langmate/languages" class="btn btn-custom">
                                 ← Înapoi la limbi

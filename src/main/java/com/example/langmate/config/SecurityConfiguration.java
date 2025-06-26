@@ -49,7 +49,12 @@ public class SecurityConfiguration {
                         "/langmate/tests",
                         "/langmate/tests/*",
                         "/langmate/tests/**",
-                        "/langmate/tests/*/submit"
+                        "/langmate/tests/*/submit",
+                        "/langmate/milestones/web",
+                        "/langmate/milestones/create-web",
+                        "/langmate/milestones/edit/*",
+                        "/langmate/milestones/update-web/*",
+                        "/langmate/milestones/delete-web/*"
                     )
                     .permitAll()
                     .anyRequest()

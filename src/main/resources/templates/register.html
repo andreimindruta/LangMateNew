@@ -2,27 +2,131 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .field-error {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+    <div class="form-container">
 <h2>Register</h2>
+        
+        <!-- Error message display -->
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+        
 <form th:action="@{/langmate/users/register}" th:object="${registerDto}" method="POST">
-  <div>
+            <div class="form-group">
     <label>Username:</label>
     <input type="text" th:field="*{username}" />
-    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</span>
+                <span th:if="${#fields.hasErrors('username')}" class="field-error" th:errors="*{username}"></span>
   </div>
-  <div>
+            
+            <div class="form-group">
     <label>Password:</label>
     <input type="password" th:field="*{pass}" />
+                <span th:if="${#fields.hasErrors('pass')}" class="field-error" th:errors="*{pass}"></span>
   </div>
-  <div>
+            
+            <div class="form-group">
     <label>Name:</label>
     <input type="text" th:field="*{name}" />
-    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+                <span th:if="${#fields.hasErrors('name')}" class="field-error" th:errors="*{name}"></span>
   </div>
-  <div>
+            
+            <div class="form-group">
     <button type="submit">Register</button>
   </div>
 </form>
+        
+        <div class="login-link">
+            Already have an account? <a th:href="@{/langmate/users/login}">Login here</a>
+        </div>
+    </div>
 </body>
 </html>

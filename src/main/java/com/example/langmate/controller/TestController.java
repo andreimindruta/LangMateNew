@@ -6,6 +6,11 @@ import com.example.langmate.controller.payload.response.GetQuestionsResponse;
 import com.example.langmate.controller.payload.request.PostAnswerRequest;
 import com.example.langmate.controller.payload.response.GetResultResponse;
 import com.example.langmate.service.impl.TestService;
+import com.example.langmate.service.impl.MilestoneService;
+import com.example.langmate.service.impl.UserService;
+import com.example.langmate.domain.entities.MilestoneUser;
+import com.example.langmate.domain.entities.User;
+import com.example.langmate.domain.entities.Milestone;
 import com.example.langmate.validation.LangmateRuntimeException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/langmate/tests")
@@ -32,6 +38,8 @@ import java.security.Principal;
 public class TestController {
 
   private final TestService testService;
+  private final MilestoneService milestoneService;
+  private final UserService userService;
 
   @GetMapping
   public String showTestPage(Model model) {
@@ -107,6 +115,16 @@ public class TestController {
     
     // Salvăm rezultatul folosind logica existentă
     GetResultResponse result = testService.saveResultForTest(testResultRequest, jwt);
+    
+    // Obținem milestone-urile utilizatorului
+    Optional<User> userOpt = userService.getUserByUsername(username);
+    if (userOpt.isPresent()) {
+        User user = userOpt.get();
+        List<Milestone> userMilestones = milestoneService.getUserMilestones(user.getId());
+        model.addAttribute("userMilestones", userMilestones);
+    } else {
+        model.addAttribute("userMilestones", List.of());
+    }
     
     // Adăugăm datele în model pentru view
     model.addAttribute("score", result.grade());

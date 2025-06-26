@@ -62,7 +62,19 @@ public class MilestoneService {
     }
 
     public void deleteMilestone(Long id) {
+        logger.info("Deleting milestone with id: {}", id);
+        
+        // First, delete all MilestoneUser records that reference this milestone
+        List<MilestoneUser> milestoneUsers = milestoneUserRepository.findByMilestoneId(id);
+        if (!milestoneUsers.isEmpty()) {
+            logger.info("Found {} MilestoneUser records to delete for milestone id: {}", milestoneUsers.size(), id);
+            milestoneUserRepository.deleteAll(milestoneUsers);
+            logger.info("Deleted all MilestoneUser records for milestone id: {}", id);
+        }
+        
+        // Then delete the milestone itself
         milestoneRepository.deleteById(id);
+        logger.info("Successfully deleted milestone with id: {}", id);
     }
 
     /**
@@ -126,5 +138,19 @@ public class MilestoneService {
                 .stream()
                 .map(MilestoneUser::getMilestone)
                 .toList();
+    }
+
+    public void updateMilestone(Long id, MilestoneRequest request) {
+        Milestone milestone = getMilestoneById(id);
+        milestone.setName(request.name());
+        milestone.setDescription(request.description());
+        milestone.setTargetValue(request.targetValue());
+        try {
+            milestone.setTargetType(MilestoneTargetType.valueOf(request.targetType().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid target type: {}", request.targetType());
+            throw new RuntimeException("Invalid target type: " + request.targetType());
+        }
+        milestoneRepository.save(milestone);
     }
 }

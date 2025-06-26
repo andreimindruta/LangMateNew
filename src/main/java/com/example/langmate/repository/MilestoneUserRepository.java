@@ -8,5 +8,6 @@ import java.util.List;
 public interface MilestoneUserRepository extends JpaRepository<MilestoneUser, Long> {
     boolean existsByUserIdAndMilestoneId(Long userId, Long milestoneId);
     List<MilestoneUser> findByUserId(Long userId);
+    List<MilestoneUser> findByMilestoneId(Long milestoneId);
 }
 
